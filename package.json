@@ -1,0 +1,50 @@
+{
+  "name": "@vergekit/core",
+  "version": "0.0.0",
+  "description": "Core runtime utilities for Verge Kit applications.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vergekit/core.git"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utilities": {
+      "types": "./dist/utilities/index.d.ts",
+      "default": "./dist/utilities/index.js"
+    },
+    "./http": {
+      "types": "./dist/http/index.d.ts",
+      "default": "./dist/http/index.js"
+    },
+    "./email": {
+      "types": "./dist/email/index.d.ts",
+      "default": "./dist/email/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "verify": "npm run check && npm run test && npm run build"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
