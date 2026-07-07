@@ -7,6 +7,7 @@ Core runtime helpers for Verge Kit applications.
 - `@vergekit/core/utilities`
 - `@vergekit/core/http`
 - `@vergekit/core/email`
+- `@vergekit/core/auth`
 
 ## Development
 
