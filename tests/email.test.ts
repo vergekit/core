@@ -108,6 +108,52 @@ describe('email providers', () => {
 });
 
 describe('email runtime factory', () => {
+  it.each([
+    {
+      name: 'console',
+      runtimeEnv: { EMAIL_PROVIDER: 'console' },
+    },
+    {
+      name: 'resend',
+      runtimeEnv: {
+        EMAIL_PROVIDER: 'resend',
+        RESEND_API_KEY: 'resend-key',
+      },
+    },
+    {
+      name: 'mailgun',
+      runtimeEnv: {
+        EMAIL_PROVIDER: 'mailgun',
+        MAILGUN_API_KEY: 'mailgun-key',
+        MAILGUN_DOMAIN: 'mg.example.com',
+      },
+    },
+  ])(
+    'uses the $name provider from a Node-style env without a Workers binding',
+    async ({ name, runtimeEnv }) => {
+      const info = vi.fn();
+      const fetcher = vi.fn<Fetcher>(async () => {
+        return Response.json({ id: `${name}-message-1` });
+      });
+      const provider = createMailerFromEnv(runtimeEnv, {
+        console: { info },
+        fetcher,
+      });
+
+      const result = await provider.send(message);
+
+      expect('EMAIL' in runtimeEnv).toBe(false);
+      expect(result.provider).toBe(name);
+
+      if (name === 'console') {
+        expect(info).toHaveBeenCalledWith('[email:console]', message);
+        expect(fetcher).not.toHaveBeenCalled();
+      } else {
+        expect(fetcher).toHaveBeenCalledOnce();
+      }
+    },
+  );
+
   it('sends through the configured provider from runtime env', async () => {
     const info = vi.fn();
 

@@ -100,6 +100,7 @@ export function buildAuthOptions<TConfig extends AnyDefinedAuthConfig>({
 }: BuildAuthOptionsInput<TConfig>): BetterAuthOptions {
   const emailAndPassword: BetterAuthOptions['emailAndPassword'] = {
     enabled: true,
+    requireEmailVerification: true,
   };
 
   if (authEmail) {
@@ -128,18 +129,21 @@ export function buildAuthOptions<TConfig extends AnyDefinedAuthConfig>({
       },
     },
     emailAndPassword,
-    emailVerification: authEmail
-      ? {
-          sendOnSignUp: true,
-          sendVerificationEmail: async ({ user, url }) => {
-            await authEmail.sendVerificationEmail({
-              to: user.email,
-              name: user.name,
-              url,
-            });
-          },
-        }
-      : undefined,
+    emailVerification: {
+      autoSignInAfterVerification: true,
+      ...(authEmail
+        ? {
+            sendOnSignUp: true,
+            sendVerificationEmail: async ({ user, url }) => {
+              await authEmail.sendVerificationEmail({
+                to: user.email,
+                name: user.name,
+                url,
+              });
+            },
+          }
+        : {}),
+    },
     plugins: createAuthServerPlugins(authConfig, additionalPlugins),
   };
 

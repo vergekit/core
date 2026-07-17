@@ -3,6 +3,7 @@ import {
   buildAuthOptions,
   createAuthClientPlugins,
   createAuthEmailSenderOptions,
+  createAuthFromEnv,
   createAuthServerPlugins,
   defineAuthConfig,
   getAppRolesForUser,
@@ -136,6 +137,26 @@ describe('auth route helpers', () => {
 });
 
 describe('Better Auth server helpers', () => {
+  it('creates auth from a plain Node-style environment object', () => {
+    const runtimeEnv: Record<string, string | undefined> = {
+      BETTER_AUTH_SECRET: 'test-secret-with-at-least-32-characters',
+      BETTER_AUTH_URL: 'https://node.example.com/',
+      EMAIL_PROVIDER: 'console',
+    };
+
+    const auth = createAuthFromEnv({
+      runtimeEnv,
+      request: new Request('https://fallback.example.com/dashboard'),
+      database: {},
+      schema: {},
+      authConfig,
+      drizzle: { provider: 'mysql' },
+    });
+
+    expect(auth.handler).toBeTypeOf('function');
+    expect(auth.api.getSession).toBeTypeOf('function');
+  });
+
   it('builds Better Auth options with email/password, admin plugin, email hooks, and extension hooks', async () => {
     const sent: SendEmailInput[] = [];
     const authEmail: AuthEmailSender = {
@@ -176,7 +197,9 @@ describe('Better Auth server helpers', () => {
     expect(options.baseURL).toBe('https://vk.example.com');
     expect(options.secret).toBe('test-secret-with-at-least-32-characters');
     expect(options.emailAndPassword?.enabled).toBe(true);
+    expect(options.emailAndPassword?.requireEmailVerification).toBe(true);
     expect(options.emailVerification?.sendOnSignUp).toBe(true);
+    expect(options.emailVerification?.autoSignInAfterVerification).toBe(true);
     expect(options.plugins?.map((plugin) => plugin.id)).toEqual([
       'admin',
       'custom-plugin',
@@ -206,6 +229,24 @@ describe('Better Auth server helpers', () => {
         html: 'https://vk.example.com/reset-password/reset-token',
       }),
     ]);
+  });
+
+  it('requires verification before creating the first session by default', () => {
+    const options = buildAuthOptions({
+      database: {},
+      schema: {},
+      authConfig,
+      baseURL: 'https://vk.example.com',
+      secret: 'test-secret-with-at-least-32-characters',
+    });
+
+    expect(options.emailAndPassword).toEqual({
+      enabled: true,
+      requireEmailVerification: true,
+    });
+    expect(options.emailVerification).toEqual({
+      autoSignInAfterVerification: true,
+    });
   });
 
   it('blocks Better Auth session creation for banned app users', async () => {
