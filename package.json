@@ -1,6 +1,6 @@
 {
   "name": "@vergekit/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Core runtime utilities for Verge Kit applications.",
   "type": "module",
   "repository": {
