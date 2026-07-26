@@ -1,6 +1,6 @@
 {
   "name": "@vergekit/core",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Core runtime utilities for Verge Kit applications.",
   "type": "module",
   "repository": {
@@ -40,9 +40,9 @@
     "verify": "npm run check && npm run test && npm run build"
   },
   "dependencies": {
-    "@better-auth/core": "1.6.19",
-    "@better-auth/drizzle-adapter": "1.6.19",
-    "better-auth": "1.6.19",
+    "@better-auth/core": "1.6.25",
+    "@better-auth/drizzle-adapter": "1.6.25",
+    "better-auth": "1.6.25",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
@@ -53,6 +53,9 @@
   "devDependencies": {
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
+  },
+  "allowScripts": {
+    "fsevents": false
   },
   "publishConfig": {
     "access": "public"
