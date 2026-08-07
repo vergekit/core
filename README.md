@@ -22,3 +22,7 @@ Build before publishing:
 npm run build
 npm publish --access public
 ```
+
+## License
+
+`@vergekit/core` is available under the [MIT License](./LICENSE).
