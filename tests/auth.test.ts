@@ -203,6 +203,7 @@ describe('Better Auth server helpers', () => {
     expect(options.plugins?.map((plugin) => plugin.id)).toEqual([
       'admin',
       'custom-plugin',
+      'vk-direct-email-change',
     ]);
     expect(options.trustedOrigins).toEqual(['https://admin.vk.example.com']);
 

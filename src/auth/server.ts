@@ -20,6 +20,7 @@ import {
   type AnyDefinedAuthConfig,
 } from './config.js';
 import { isAppBannedUser, type AppUserFields } from './permissions.js';
+import { createDirectEmailChangePlugin } from './direct-email.js';
 
 export interface AuthRuntimeEnv extends EmailRuntimeEnv {
   BETTER_AUTH_SECRET?: string;
@@ -129,6 +130,7 @@ export function buildAuthOptions<TConfig extends AnyDefinedAuthConfig>({
       },
     },
     emailAndPassword,
+    user: { changeEmail: { enabled: false } },
     emailVerification: {
       autoSignInAfterVerification: true,
       ...(authEmail
@@ -144,7 +146,7 @@ export function buildAuthOptions<TConfig extends AnyDefinedAuthConfig>({
           }
         : {}),
     },
-    plugins: createAuthServerPlugins(authConfig, additionalPlugins),
+    plugins: [...createAuthServerPlugins(authConfig, additionalPlugins), createDirectEmailChangePlugin(authConfig)],
   };
 
   return extendOptions ? extendOptions(options) : options;
